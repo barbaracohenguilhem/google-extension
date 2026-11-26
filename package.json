@@ -1,0 +1,21 @@
+{
+  "name": "lumina-bulk-image-exporter",
+  "version": "2.0.0",
+  "description": "Extensão Chrome ultra-rápida para coletar e exportar fotos em massa (ZIP ou pasta) em resolução máxima de qualquer site.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "icons": "python3 scripts/generate_icons.py",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "fflate": "^0.8.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "typescript": "^5.8.0",
+    "@types/chrome": "^0.0.310"
+  }
+}

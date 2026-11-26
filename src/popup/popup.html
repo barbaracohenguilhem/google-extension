@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina Bulk — Exportador de Fotos em Massa</title>
+  <link rel="stylesheet" href="../shared/styles.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="popup-shell">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="brand">
+        <img src="../icons/icon-48.png" alt="Lumina Bulk" class="brand-icon" />
+        <div>
+          <h1>Lumina Bulk</h1>
+          <p>Coletor & Exportador em Massa (Máx. HD)</p>
+        </div>
+      </div>
+      <button id="openPanelBtn" class="btn-secondary panel-pill" type="button" title="Abrir Painel Completo (Auto-Scroll, Filtros e Cesta)">
+        <span>📦 Painel</span>
+      </button>
+    </header>
+
+    <!-- Persistent Multi-Site Basket Card -->
+    <section class="basket-card">
+      <div class="basket-top">
+        <div>
+          <div class="section-label">Cesta Multi-Sites</div>
+          <div class="basket-count-line tabular">
+            <strong id="basketCount">0</strong> foto(s) coletada(s)
+          </div>
+        </div>
+        <button id="clearBasketBtn" class="text-btn danger" type="button" disabled>Limpar</button>
+      </div>
+
+      <div id="popupExportProgress" class="export-progress hidden">
+        <div class="export-progress-text" id="popupProgressText">Exportando...</div>
+        <div class="export-bar-track"><div class="export-bar-fill" id="popupProgressFill"></div></div>
+      </div>
+
+      <div class="basket-actions">
+        <button id="exportBasketBtn" class="btn-primary" type="button" disabled>
+          📦 Exportar Cesta (.ZIP)
+        </button>
+      </div>
+    </section>
+
+    <!-- Fast Page Capture Actions -->
+    <div class="quick-actions-grid">
+      <button id="pickerBtn" class="btn-secondary action-tile" type="button">
+        <span>🎯 Coletor Multi-Clique</span>
+        <small>Clique em várias fotos</small>
+      </button>
+      <button id="addAllPageBtn" class="btn-secondary action-tile" type="button">
+        <span>➕ Adicionar Página</span>
+        <small id="addAllHint">Todas desta aba</small>
+      </button>
+    </div>
+
+    <!-- Quick Preferences -->
+    <section class="quick-prefs">
+      <div class="pref-item">
+        <div>
+          <div class="pref-title">Botão flutuante ao passar o mouse</div>
+          <div class="pref-sub">Adicione fotos à cesta com 1 clique</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="hoverToggle" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="siteMuteRow" class="site-mute-row hidden">
+        <span id="siteDomainLabel" class="site-domain-label">site.com</span>
+        <button id="siteMuteBtn" class="site-mute-btn" type="button">🔇 Pausar neste site</button>
+      </div>
+      <div class="pref-inline-row">
+        <label class="mini-select-wrap">
+          <span>Exportar como</span>
+          <select id="exportModeSelect">
+            <option value="zip">Arquivo .ZIP (1 clique)</option>
+            <option value="folder">Pasta em Downloads</option>
+          </select>
+        </label>
+        <label class="mini-check-wrap">
+          <input type="checkbox" id="upgradeCdnToggle" checked />
+          <span>Auto alta resolução (CDNs)</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Detected Images Preview -->
+    <section class="gallery-section">
+      <div class="section-row">
+        <span class="section-label">Fotos nesta página <strong id="imageCount" class="count-pill tabular">0</strong></span>
+        <button id="rescanBtn" class="text-btn" type="button">↻ Atualizar</button>
+      </div>
+      <div id="galleryStatus" class="gallery-status">Escaneando fotos da aba ativa...</div>
+      <div id="imageGrid" class="image-grid"></div>
+    </section>
+
+    <footer class="popup-footer">
+      <span class="shortcut-tip">Atalhos: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> / <kbd>S</kbd></span>
+      <button id="openPanelFooterBtn" class="text-btn" type="button">Auto-Scroll & Filtros →</button>
+    </footer>
+  </div>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumina Bulk — Exportador de Fotos em Massa</title>
+  <link rel="stylesheet" href="../shared/styles.css" />
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <div class="panel-app">
+    <!-- Top Header -->
+    <header class="panel-header">
+      <div class="brand">
+        <img src="../icons/icon-48.png" alt="Lumina Bulk" class="brand-icon" />
+        <div>
+          <h1>Lumina Bulk</h1>
+          <p>Coletor & Exportador em Massa · Resolução Máxima</p>
+        </div>
+      </div>
+      <button id="headerPickerBtn" class="btn-secondary" type="button" title="Clique em quantas fotos quiser na página (ESC para sair)">
+        🎯 Multi-Clique
+      </button>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="panel-tabs" role="tablist">
+      <button type="button" class="tab-btn active" data-tab="page">
+        🌐 Página <span id="tabPageCount" class="tab-badge tabular">0</span>
+      </button>
+      <button type="button" class="tab-btn" data-tab="basket">
+        📦 Cesta <span id="tabBasketCount" class="tab-badge basket-badge tabular">0</span>
+      </button>
+      <button type="button" class="tab-btn" data-tab="settings">
+        ⚙️ Config
+      </button>
+    </nav>
+
+    <!-- Shared Export Progress Banner -->
+    <div id="exportBanner" class="export-banner hidden">
+      <div class="export-banner-head">
+        <span id="exportBannerText">Preparando exportação...</span>
+        <button id="cancelExportBtn" class="cancel-mini-btn" type="button">✕ Cancelar</button>
+      </div>
+      <div class="export-track">
+        <div id="exportFill" class="export-fill"></div>
+      </div>
+    </div>
+
+    <!-- TAB 1: CURRENT PAGE SCANNER + AUTO-SCROLL -->
+    <main id="panel-page" class="tab-panel active">
+      <div class="toolbar-card">
+        <div class="scan-controls">
+          <button id="scanPageBtn" class="btn-secondary" type="button">↻ Escanear</button>
+          <button id="autoScrollBtn" class="btn-secondary scroll-btn" type="button" title="Rola páginas infinitas automaticamente coletando todas as fotos">
+            ⬇ Auto-Scroll
+          </button>
+        </div>
+
+        <div class="filter-row">
+          <select id="filterMinSize" class="panel-select" aria-label="Tamanho mínimo">
+            <option value="48">Todas (≥ 48px)</option>
+            <option value="150" selected>Médias+ (≥ 150px)</option>
+            <option value="400">Grandes (≥ 400px)</option>
+            <option value="800">HD+ (≥ 800px)</option>
+          </select>
+          <select id="filterOrientation" class="panel-select" aria-label="Orientação">
+            <option value="all">Qualquer formato</option>
+            <option value="landscape">Paisagem (Horizontal)</option>
+            <option value="portrait">Retrato (Vertical)</option>
+            <option value="square">Quadrada</option>
+          </select>
+          <select id="filterSource" class="panel-select" aria-label="Origem">
+            <option value="all">Todos tipos</option>
+            <option value="img">IMG / Picture</option>
+            <option value="background">Fundo CSS</option>
+            <option value="canvas">Canvas / Video</option>
+          </select>
+        </div>
+
+        <div id="autoScrollStatus" class="scroll-status hidden"></div>
+
+        <div class="selection-bar">
+          <button id="selectAllPageBtn" class="text-link-btn" type="button">Selecionar todas</button>
+          <div class="selection-actions">
+            <button id="addSelectedBasketBtn" class="btn-secondary mini-cta" type="button" disabled>
+              ➕ Cesta (<span id="selCountAdd" class="tabular">0</span>)
+            </button>
+            <button id="exportSelectedPageBtn" class="btn-primary mini-cta" type="button" disabled>
+              📦 Exportar (<span id="selCountExp" class="tabular">0</span>)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="pageStatus" class="empty-note">Escaneando fotos da aba ativa...</div>
+      <div id="pageGrid" class="thumb-grid"></div>
+    </main>
+
+    <!-- TAB 2: PERSISTENT MULTI-SITE BASKET -->
+    <section id="panel-basket" class="tab-panel">
+      <div class="toolbar-card basket-toolbar">
+        <div class="basket-header-row">
+          <div>
+            <div class="card-title">Cesta Multi-Sites</div>
+            <div class="basket-sub">Colete fotos de várias abas/sites e exporte tudo de uma vez</div>
+          </div>
+          <button id="basketClearBtn" class="text-link-btn danger-link" type="button" disabled>Limpar tudo</button>
+        </div>
+
+        <div class="export-mode-row">
+          <select id="basketExportMode" class="panel-select" aria-label="Formato da exportação">
+            <option value="zip">📦 Arquivo .ZIP único (Recomendado)</option>
+            <option value="folder">📁 Pasta direta em Downloads</option>
+          </select>
+          <label class="inline-check">
+            <input type="checkbox" id="clearAfterExportChk" />
+            <span>Limpar após exportar</span>
+          </label>
+        </div>
+
+        <button id="exportBasketAllBtn" class="btn-primary" type="button" disabled>
+          📦 Exportar Toda a Cesta (0 fotos)
+        </button>
+      </div>
+
+      <div id="basketEmpty" class="empty-box">
+        <div class="empty-icon">📦</div>
+        <h3>Sua cesta está vazia</h3>
+        <p>
+          Passe o mouse em qualquer foto e clique em <strong>➕ Cesta</strong>, use o
+          <strong>🎯 Multi-Clique</strong> (<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>) ou adicione fotos da aba <strong>Página</strong>.
+        </p>
+      </div>
+      <div id="basketGrid" class="thumb-grid"></div>
+    </section>
+
+    <!-- TAB 3: SETTINGS & EXPORT HISTORY -->
+    <section id="panel-settings" class="tab-panel">
+      <div class="toolbar-card">
+        <div class="card-title">Preferências de Exportação</div>
+
+        <label class="field-group">
+          <span>Modo Padrão de Exportação</span>
+          <select id="cfgExportMode" class="panel-select">
+            <option value="zip">Arquivo .ZIP único (ideal para upload em lote)</option>
+            <option value="folder">Pasta organizada em Downloads/LuminaExport/</option>
+          </select>
+        </label>
+
+        <div class="toggle-row">
+          <div>
+            <div class="setting-title">Buscar versão original em alta (CDNs)</div>
+            <div class="setting-desc">Converte miniaturas do X, Pinterest, Amazon, Shopify, Wikipedia, etc.</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="cfgUpgradeUrls" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="setting-title">Botão flutuante ao passar o mouse</div>
+            <div class="setting-desc">Mostra "➕ Cesta" e "⬇" no canto das fotos nos sites</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="cfgHoverButton" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <div class="setting-title">Incluir metadata.json dentro do ZIP</div>
+            <div class="setting-desc">Salva URLs de origem, página e dimensões junto com as fotos</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="cfgIncludeManifest" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div id="mutedDomainsBox" class="muted-domains-box hidden">
+          <span class="muted-label">Sites com botão flutuante pausado:</span>
+          <div id="mutedDomainsList" class="muted-chips"></div>
+        </div>
+
+        <div id="savedToast" class="saved-toast"></div>
+      </div>
+
+      <div class="toolbar-card">
+        <div class="basket-header-row">
+          <span class="card-title">Histórico de Exportações</span>
+          <button id="clearHistoryBtn" class="text-link-btn danger-link" type="button">Limpar</button>
+        </div>
+        <div id="historyList" class="history-list">
+          <div class="empty-note">Nenhuma exportação realizada ainda.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="sidepanel.js" type="module"></script>
+</body>
+</html>
